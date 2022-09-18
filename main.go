@@ -8,13 +8,11 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/valyala/fasthttp"
-
-	"example/fasthttpadaptor"
 )
 
 var upgrader = websocket.Upgrader{} // use default options
 
-var wsHandler = fasthttpadaptor.NewHijackFastHTTPHandler(func(w http.ResponseWriter, r *http.Request) {
+var wsHandler = NewHijackFastHTTPHandler(func(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)

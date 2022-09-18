@@ -1,4 +1,4 @@
-package fasthttpadaptor
+package main
 
 import (
 	"bufio"
@@ -11,12 +11,13 @@ import (
 
 	"github.com/labstack/gommon/log"
 	"github.com/valyala/fasthttp"
+	"github.com/valyala/fasthttp/fasthttpadaptor"
 )
 
 func NewHijackFastHTTPHandler(h http.HandlerFunc) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
 		var r http.Request
-		if err := ConvertRequest(ctx, &r, true); err != nil {
+		if err := fasthttpadaptor.ConvertRequest(ctx, &r, true); err != nil {
 			ctx.Logger().Printf("cannot parse requestURI %q: %v", r.RequestURI, err)
 			ctx.Error("Internal Server Error", fasthttp.StatusInternalServerError)
 			return
