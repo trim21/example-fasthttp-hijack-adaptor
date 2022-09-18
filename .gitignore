@@ -1,0 +1,7 @@
+*.exe
+.vscode/
+.idea/
+dist/
+.bin/
+.env
+.envrc
