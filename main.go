@@ -4,15 +4,13 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	mRand "math/rand"
 	"net/http"
 
-	"github.com/Trim21/app/fasthttpadaptor"
 	"github.com/gorilla/websocket"
 	"github.com/valyala/fasthttp"
-)
 
-var _ = mRand.NewSource(0)
+	"example/fasthttpadaptor"
+)
 
 var upgrader = websocket.Upgrader{} // use default options
 

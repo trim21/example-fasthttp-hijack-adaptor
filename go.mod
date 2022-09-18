@@ -1,4 +1,4 @@
-module github.com/Trim21/app
+module example
 
 go 1.18
 
