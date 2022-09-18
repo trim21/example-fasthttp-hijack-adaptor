@@ -6,13 +6,15 @@ import (
 	"log"
 	"net/http"
 
+	"example/fasthttpadaptor"
+
 	"github.com/gorilla/websocket"
 	"github.com/valyala/fasthttp"
 )
 
 var upgrader = websocket.Upgrader{} // use default options
 
-var wsHandler = NewHijackFastHTTPHandler(func(w http.ResponseWriter, r *http.Request) {
+var wsHandler = fasthttpadaptor.NewFastHTTPHandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -36,19 +38,20 @@ var wsHandler = NewHijackFastHTTPHandler(func(w http.ResponseWriter, r *http.Req
 })
 
 func main() {
-	s := &fasthttp.Server{KeepHijackedConns: true, Handler: func(ctx *fasthttp.RequestCtx) {
-		ctx.Hijacked()
-		if string(ctx.Path()) == "/" {
-			ctx.Response.Header.SetContentType("text/html")
-			homeTemplate.Execute(ctx.Response.BodyWriter(), "ws://"+string(ctx.Host())+"/echo")
-			return
-		}
+	s := &fasthttp.Server{
+		// KeepHijackedConns: true,
+		Handler: func(ctx *fasthttp.RequestCtx) {
+			if string(ctx.Path()) == "/" {
+				ctx.Response.Header.SetContentType("text/html")
+				homeTemplate.Execute(ctx.Response.BodyWriter(), "ws://"+string(ctx.Host())+"/echo")
+				return
+			}
 
-		if string(ctx.Path()) == "/echo" {
-			wsHandler(ctx)
-			return
-		}
-	}}
+			if string(ctx.Path()) == "/echo" {
+				wsHandler(ctx)
+				return
+			}
+		}}
 
 	log.Fatal(s.ListenAndServe("127.0.0.1:9999"))
 }
